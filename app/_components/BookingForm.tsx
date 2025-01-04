@@ -72,7 +72,11 @@ export default function BookingForm() {
     }
   }, [startTime, setValue])
 
-  async function onSubmit(data) {
+  async function onSubmit(data: {
+    message: string
+    startTime: Date | number
+    endTime: Date | number
+  }) {
     try {
       data.startTime = data.startTime.getTime()
       data.endTime = data.endTime.getTime()
@@ -85,7 +89,7 @@ export default function BookingForm() {
         toast.success(res.data.message)
         router.push(`/booking/${res.data.id}`)
       }
-    } catch (error) {
+    } catch (error: { message: string }) {
       toast.error(error.message || 'Some error occurred')
     }
   }

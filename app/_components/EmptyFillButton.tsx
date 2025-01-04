@@ -11,7 +11,7 @@ export default function EmptyFillButton({
   to,
 }: {
   children: ReactNode
-  onClick: () => {} | null
+  onClick: () => void | null
   type: 'button' | 'submit' | 'reset' | undefined
   to: string | undefined
 }) {
