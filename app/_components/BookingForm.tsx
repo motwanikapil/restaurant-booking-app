@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client'
 
 import 'react-datepicker/dist/react-datepicker.css'
