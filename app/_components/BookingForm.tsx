@@ -10,7 +10,8 @@ import BookingCalendar from './BookingCalendar'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
-import { addMinutes } from 'date-fns'
+import { addMinutes, roundToNearestMinutes } from 'date-fns'
+import { useEffect, useState } from 'react'
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -51,22 +52,35 @@ export default function BookingForm() {
   })
 
   const router = useRouter()
-
   const startTime = watch('startTime')
+
+  // State to store the initial rounded time
+  const [initialTime] = useState(() =>
+    roundToNearestMinutes(new Date(), { nearestTo: 30 })
+  )
 
   useEffect(() => {
     // Set initial values for startTime and endTime
-    const now = roundToNearestMinutes(new Date(), { nearestTo: 30 })
-    setValue('startTime', now)
-    setValue('endTime', addMinutes(now, 30))
-  }, [setValue])
+    setValue('startTime', initialTime)
+    setValue('endTime', addMinutes(initialTime, 30))
+  }, [initialTime, setValue])
+
+  // Automatically update endTime to be 30 minutes ahead of startTime whenever startTime changes
+  useEffect(() => {
+    if (startTime) {
+      setValue('endTime', addMinutes(startTime, 30))
+    }
+  }, [startTime, setValue])
 
   async function onSubmit(data) {
     try {
       data.startTime = data.startTime.getTime()
       data.endTime = data.endTime.getTime()
 
-      const res = await axios.post('http://localhost:4000/booking', data)
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/booking`,
+        data
+      )
       if (res) {
         toast.success(res.data.message)
         router.push(`/booking/${res.data.id}`)
@@ -120,19 +134,23 @@ export default function BookingForm() {
         />
       </section>
       <section className='flex flex-col gap-6'>
-        <BookingCalendar
-          dateAndTime={startTime}
-          setDateAndTime={(date) => setValue('startTime', date)}
-        />
-        {errors.startTime && (
-          <p className='text-red-500'>{errors.startTime.message}</p>
-        )}
-        <BookingCalendar
-          dateAndTime={addMinutes(startTime, 30)}
-          setDateAndTime={(date) => setValue('endTime', date)}
-        />
-        {errors.endTime && (
-          <p className='text-red-500'>{errors.endTime.message}</p>
+        {startTime && (
+          <>
+            <BookingCalendar
+              dateAndTime={startTime}
+              setDateAndTime={(date) => setValue('startTime', date)}
+            />
+            {errors.startTime && (
+              <p className='text-red-500'>{errors.startTime.message}</p>
+            )}
+            <BookingCalendar
+              dateAndTime={addMinutes(startTime, 30)}
+              setDateAndTime={(date) => setValue('endTime', date)}
+            />
+            {errors.endTime && (
+              <p className='text-red-500'>{errors.endTime.message}</p>
+            )}
+          </>
         )}
       </section>
       <section className='w-full text-center mt-6'>

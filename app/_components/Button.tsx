@@ -8,7 +8,7 @@ export default function Button({
   to,
 }: {
   children: ReactNode
-  onClick: () => {} | undefined
+  onClick: () => void | undefined
   type: 'button' | 'submit' | 'reset' | undefined
   to: string | undefined
 }) {

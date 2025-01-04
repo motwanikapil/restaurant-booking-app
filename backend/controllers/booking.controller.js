@@ -82,6 +82,8 @@ async function remove(req, res) {
 
     if (!deletedBooking)
       return res.status(404).json({ message: 'Booking not found' })
+
+    res.status(200).json({message: 'Booking Deleted Successfully'})
   } catch (error) {
     console.error(error)
   }
