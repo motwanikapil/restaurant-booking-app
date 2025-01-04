@@ -11,7 +11,7 @@ export default function BookingCalendar({
   setDateAndTime,
 }: {
   dateAndTime: Date
-  setDateAndTime: Dispatch<SetStateAction<Date>>
+  setDateAndTime: any
 }) {
   const [tempDate, setTempDate] = useState(dateAndTime) // Temporary date state
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false) // Control DatePicker visibility
