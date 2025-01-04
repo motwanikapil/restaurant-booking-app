@@ -35,7 +35,7 @@ export default function BookingCalendar({
     <main className='flex flex-col items-center justify-center mt-4'>
       <DatePicker
         selected={tempDate}
-        onChange={(date) => setTempDate(date)}
+        onChange={(date) => setTempDate(date ?? new Date())}
         showTimeSelect
         dateFormat='dd/MM/yyyy HH:mm'
         timeIntervals={30}
